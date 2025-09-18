@@ -1,0 +1,31 @@
+{
+  "properties": [
+    {
+      "id": "markerSize",
+      "type": "number",
+      "label": "Tamanho do Marcador",
+      "default": 10,
+      "min": 1,
+      "max": 50
+    },
+    {
+      "id": "fillOpacity",
+      "type": "number",
+      "label": "Opacidade do Preenchimento",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    {
+      "id": "displayMode",
+      "type": "string",
+      "label": "Modo de Exibição",
+      "enum": [
+        "Numérico",
+        "Percentual"
+      ],
+      "default": "Numérico"
+    }
+  ]
+}
