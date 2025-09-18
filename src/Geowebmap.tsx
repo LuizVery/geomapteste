@@ -1,31 +1,26 @@
+// Conteúdo final para src/Geowebmap.tsx
+
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { DataMapped, setupData, postSelection } from '@sassoftware/va-report-components';
 import ColorPalette from './ColorPalette';
 import './Geowebmap.css';
 
-// Define the props that will be passed into the component
 interface GeowebmapProps {
   data: DataMapped;
   height: number;
   width: number;
   markerSize: number;
   fillOpacity: number;
-  displayMode: string; // Nossa nova propriedade!
+  displayMode: string;
 }
 
-// As a functional component, this is the main logic block.
 const Geowebmap = (props: GeowebmapProps) => {
-  // Create a ref to hold the map instance.
   const mapRef = useRef<L.Map>(null);
-  // Create a ref for the div element that will contain the map.
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  // Create a ref to hold the layer of markers.
   const markersRef = useRef<L.LayerGroup>(null);
-  // Create a ref to hold the data mapping details.
   const dataMappingRef = useRef(null);
 
-  // This useEffect hook initializes the map. It runs only once.
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
       (mapRef as any).current = L.map(mapContainerRef.current, {
@@ -40,8 +35,6 @@ const Geowebmap = (props: GeowebmapProps) => {
     }
   }, []);
 
-  // This is the CORE useEffect. It runs whenever the data or options change.
-  // This is the correct place to update the markers.
   useEffect(() => {
     if (!props.data || !mapRef.current) {
       return;
@@ -65,13 +58,10 @@ const Geowebmap = (props: GeowebmapProps) => {
 
     const colors = colorVar ? new ColorPalette(data.map(row => row[colorVar.name])) : null;
 
-    // INÍCIO DA NOVA LÓGICA
-    // Calcula o total da medida ANTES do loop, se o modo "Percentual" estiver ativo.
     let totalMeasure = 0;
     if (props.displayMode === 'Percentual' && measureVar) {
         totalMeasure = data.reduce((sum, row) => sum + (parseFloat(row[measureVar.name]) || 0), 0);
     }
-    // FIM DA NOVA LÓGICA
 
     data.forEach((row, index) => {
       const lat = parseFloat(row[latVar.name]);
@@ -83,8 +73,6 @@ const Geowebmap = (props: GeowebmapProps) => {
 
       const location = locationVar ? row[locationVar.name] : `${lat}, ${long}`;
 
-      // INÍCIO DA NOVA LÓGICA
-      // Decide o que exibir (número ou percentual) com base na opção selecionada.
       let displayValue;
       if (props.displayMode === 'Percentual' && measureVar) {
           const value = parseFloat(row[measureVar.name]) || 0;
@@ -95,7 +83,6 @@ const Geowebmap = (props: GeowebmapProps) => {
           displayValue = value.toLocaleString();
       }
       const popupContent = `<b>${location}</b>${measureVar ? `<br>${measureLabel}: ${displayValue}` : ''}`;
-      // FIM DA NOVA LÓGICA
 
       const markerOptions: L.CircleMarkerOptions = {
         color: 'gray',
